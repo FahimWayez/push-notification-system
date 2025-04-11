@@ -1,98 +1,168 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Push Notification System
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This project is a NestJS application that demonstrates how to send push notifications immediately or at a scheduled time using Bull (a Redis-backed queue system). In this example, push notifications are simulated by logging messages to the console. The app also includes Swagger documentation and a Bull Board UI for monitoring jobs.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## Table of Contents
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- [Installation](#installation)
+- [API Testing Guidelines](#api-testing-guidelines)
+- [Explanation of Scheduling Logic](#explanation-of-scheduling-logic)
+- [Accessing the Admin UIs](#accessing-the-admin-uis)
+- [Future Improvements](#future-improvements)
+- [License](#license)
 
-## Project setup
+---
 
-```bash
-$ pnpm install
-```
+## Installation
 
-## Compile and run the project
+### Prerequisites
+
+- **Node.js** (v16 or higher)
+- **pnpm** (preferred for dependency management)
+- **Redis** (local installation or via Docker)
+
+### Running Redis
+
+You can run Redis using one of the following methods:
 
 ```bash
-# development
-$ pnpm run start
+# Option 1: Using redis-server (installed locally)
+redis-server
 
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+# Option 2: Using Docker
+docker run --name push-redis -p 6379:6379 -d redis
 ```
 
-## Run tests
+### Clone and Install Dependencies
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+git clone https://github.com/FahimWayez/push-notification-system.git
+cd push-notification-system
+pnpm install
 ```
 
-## Deployment
+### Environment Setup
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Create a `.env` file in the root directory and add the following content:
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+```env
+PORT=5001
+REDIS_HOST=localhost
+REDIS_PORT=6379
+```
+
+### Starting the Application
+
+Start the app in development mode using:
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+pnpm start:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+The server will run on [http://localhost:5001](http://localhost:5001).
 
-## Resources
+---
 
-Check out a few resources that may come in handy when working with NestJS:
+## API Testing Guidelines
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+You can test the API endpoints using tools like Postman, cURL, or the interactive Swagger UI.
 
-## Support
+### 1. Send Notification Immediately
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- **Endpoint:** `POST /push/send-now`
+- **Request Body Example:**
 
-## Stay in touch
+```json
+{
+  "title": "Immediate Promo",
+  "message": "Get 15% OFF right now!"
+}
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- **Expected Behavior:**
+  - The API immediately logs push notifications for each user.
+  - Check the console to verify that every user's name and device token are logged along with the push message.
+
+---
+
+### 2. Schedule Notification
+
+- **Endpoint:** `POST /push/schedule`
+- **Request Body Example:**
+
+```json
+{
+  "title": "Promo Alert",
+  "message": "Get 20% OFF!",
+  "scheduleAt": "2025-04-11T20:53:00.000Z"
+}
+```
+
+- **Expected Behavior:**
+  - The API calculates the delay based on the `scheduleAt` timestamp.
+  - If the scheduled time is in the future, the job is queued in Bull with a delay.
+  - When the scheduled time is reached, the push notification (simulated by a console log) is executed.
+  - You can check the console logs as well as the Bull Board UI to track job progress.
+
+### Testing via Swagger
+
+After starting the application, visit [http://localhost:5001/api](http://localhost:5001/api) from your browser for interactive API documentation and testing.
+
+---
+
+## Explanation of Scheduling Logic
+
+The scheduling logic in this application works as follows:
+
+1. **Payload Validation:**
+
+   - The `PushNotificationDto` validates that `title` and `message` are provided, and that `scheduleAt`, if provided, is a valid ISO8601 timestamp.
+
+2. **Time Calculation:**
+
+   - Upon receiving a request on the `/push/schedule` endpoint, the app parses the `scheduleAt` timestamp into a Date object.
+   - It then calculates the difference (in milliseconds) between the scheduled time and the current time.
+
+3. **Decision Process:**
+
+   - **Immediate Execution:**  
+     If no `scheduleAt` is provided or if the scheduled time is in the past, the notification is sent immediately by invoking the `sendNow()` method.
+   - **Delayed Execution:**  
+     If the scheduled time is in the future, the notification payload is added to the Bull queue (`pushQueue`) with a delay corresponding to the calculated time difference:
+     ```ts
+     this.pushQueue.add('scheduled-push', payload, { delay: diff });
+     ```
+
+4. **Job Processing:**
+
+   - A Bull processor listens for jobs with the name `'scheduled-push'`.
+   - When the delay expires, Bull promotes the job and executes it. The processor then simulates sending the push notification by logging a message for each user.
+
+5. **Monitoring:**
+   - You can monitor job status (queued, active, completed, etc.) via the Bull Board admin UI.
+
+---
+
+## Accessing the Admin UIs
+
+- **Swagger Documentation:**  
+  Access the interactive API docs at [http://localhost:5001/api](http://localhost:5001/api).
+
+- **Bull Board Admin UI:**  
+  Monitor your Bull queue at [http://localhost:5001/admin/queues](http://localhost:5001/admin/queues).
+
+---
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is licensed under the MIT License.
+
+---
+
+_This project was built as a technical exercise to demonstrate scheduling and job queues using NestJS, Bull, and Redis._
+
+```
+
+```
