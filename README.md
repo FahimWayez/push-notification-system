@@ -10,7 +10,6 @@ This project is a NestJS application that demonstrates how to send push notifica
 - [API Testing Guidelines](#api-testing-guidelines)
 - [Explanation of Scheduling Logic](#explanation-of-scheduling-logic)
 - [Accessing the Admin UIs](#accessing-the-admin-uis)
-- [Future Improvements](#future-improvements)
 - [License](#license)
 
 ---
@@ -162,7 +161,3 @@ This project is licensed under the MIT License.
 ---
 
 _This project was built as a technical exercise to demonstrate scheduling and job queues using NestJS, Bull, and Redis._
-
-```
-
-```
