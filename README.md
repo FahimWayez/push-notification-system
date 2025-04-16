@@ -157,7 +157,3 @@ The scheduling logic in this application works as follows:
 ## License
 
 This project is licensed under the MIT License.
-
----
-
-_This project was built as a technical exercise to demonstrate scheduling and job queues using NestJS, Bull, and Redis._
